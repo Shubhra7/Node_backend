@@ -1,0 +1,7 @@
+1. Proxy -->
+	for Create by CRP --> 
+		add in package = "proxy":"https://localhost:4000"
+	when made by vite --->
+		in vite.config.js = proxy{
+					'/api':'https://localhost:4000"
+					}
