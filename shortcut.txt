@@ -5,3 +5,4 @@
 		in vite.config.js = proxy{
 					'/api':'https://localhost:4000"
 					}
+2. intall axios to handle api rather than fetch()
