@@ -6,3 +6,5 @@
 					'/api':'https://localhost:4000"
 					}
 2. intall axios to handle api rather than fetch()
+3. npm i mongoose 
+4. npm i express
