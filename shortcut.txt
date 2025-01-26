@@ -13,7 +13,9 @@
 5. .gitkeep
 6. .gitignore (search ==> .gitignore generator => node modules paste)
 
-7. *** nodemon ==> npm i -D nodemon [help server to restart when file are saved]
+7. *** nodemon ==> npm i -D nodemon [help server to restart when file are saved]	
+	Nodemon is a utility tool for Node.js applications that automatically monitors changes in your 	source code and restarts the application when changes are detected. It is particularly useful 	during development, as it eliminates the need to manually stop and restart the server every time 	you make a code change.
+
 9. for staring point ____ "dev":"nodemon src/index.js"
 
 8. make module base ==> IN package.json-> "type": "module"
