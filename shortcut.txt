@@ -8,3 +8,32 @@
 2. intall axios to handle api rather than fetch()
 3. npm i mongoose 
 4. npm i express
+
+// professional Setup   (video: 7)
+5. .gitkeep
+6. .gitignore (search ==> .gitignore generator => node modules paste)
+
+7. *** nodemon ==> npm i -D nodemon [help server to restart when file are saved]
+9. for staring point ____ "dev":"nodemon src/index.js"
+
+8. make module base ==> IN package.json-> "type": "module"
+
+9. npm i -D prettier (when working in team maintain the save coding style)
+
+--> .prettierrc
+{
+    "singleQuote": false,
+    "bracketSpacing": true,
+    "tabWidth": 2,
+    "trailingComma": "es5",
+    "semi": true
+}
+
+--> .prettierignore
+/.vscode
+/node_modules
+./dist
+
+*.env
+.env
+.env.*
