@@ -13,7 +13,7 @@ export { asyncHandler }
 // const asyncHadler = (func)=> async () =>{}
 
 
-// create a wrapper function to handle the async function
+// create a wrapper function to handle the async function using high level function (take argument as function and return a function)
 // const asyncHandler = (fn) => async (req, res, next)=>{
 //     try{
 //         await fn(req, res, next)
