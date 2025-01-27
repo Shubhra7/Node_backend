@@ -1,4 +1,4 @@
-1. Proxy -->
+1. Proxy --> [Handle CORS (Cross Origin Problem)]
 	for Create by CRP --> 
 		add in package = "proxy":"https://localhost:4000"
 	when made by vite --->
