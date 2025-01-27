@@ -17,6 +17,7 @@
 	Nodemon is a utility tool for Node.js applications that automatically monitors changes in your 	source code and restarts the application when changes are detected. It is particularly useful 	during development, as it eliminates the need to manually stop and restart the server every time 	you make a code change.
 
 9. for staring point ____ "dev":"nodemon src/index.js"
+	*******	// "dev": "nodemon -r dotenv/config --experimental-json-modules src/index.js" ****
 
 8. make module base ==> IN package.json-> "type": "module"
 
@@ -39,3 +40,6 @@
 *.env
 .env
 .env.*
+
+
+10) npm i mongoose express dotenv
