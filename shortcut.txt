@@ -50,3 +50,9 @@
 
 13) INSTALL MONGODB Aggregation function :....
      ..............>>>>>>  npm install mongoose-aggregate-paginate-v2
+
+
+# Password handling (Cryptography)
+14) npm i bcrypt [ bcrypt help to hash our password]
+15) npm i jsonwebtoken  [for implement the JSON web tokens] https://jwt.io/introduction
+
