@@ -45,3 +45,8 @@
 10) npm i mongoose express dotenv
 
 11) npm i cookie-parser cors 
+
+12) Model Link: https://app.eraser.io/workspace/YtPqZ1VogxGy1jzIDkzj (chai aur code project)
+
+13) INSTALL MONGODB Aggregation function :....
+     ..............>>>>>>  npm install mongoose-aggregate-paginate-v2
