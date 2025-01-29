@@ -3,7 +3,7 @@ class ApiError extends Error{
         statusCode,
         message= "Something went wrong",
         errors= [],
-        statck=""
+        stack=""
     ){
         super(message)
         this.statusCode = statusCode
@@ -14,8 +14,8 @@ class ApiError extends Error{
 
         // if we pass the stack then we will use that stack otherwise we will use the stack trace
         // stack means the error line number and file name
-        if (statck){
-            this.statck = statck
+        if (stack){
+            this.stack = stack
         }else{
             Error.captureStackTrace(this, this.constructor)
         }
