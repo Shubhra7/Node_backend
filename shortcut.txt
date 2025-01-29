@@ -56,3 +56,6 @@
 14) npm i bcrypt [ bcrypt help to hash our password]
 15) npm i jsonwebtoken  [for implement the JSON web tokens] https://jwt.io/introduction
 
+#For file upload, Image upload
+16) npm i cloudinary
+
