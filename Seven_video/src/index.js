@@ -13,6 +13,10 @@ connectDB()    // when asyn fucntion done it give a promise so need to handle th
         console.log(`Server is running at port : ${process.env.PORT}`);
         
     })
+    // app.on("error",(error)=>{
+    //     console.log("Application failed to talk with database: ",error);
+    //     throw error
+    // })
 })
 .catch((err)=>{
     console.log("MONGO db connection failed!!! ",err);

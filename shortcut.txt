@@ -5,6 +5,14 @@
 		in vite.config.js = proxy{
 					'/api':'https://localhost:4000"
 					}
+==>  within vite.config.js
+	server:{
+    proxy:{
+      '/api':'http://localhost:3000',
+    },
+  },
+
+
 2. intall axios to handle api rather than fetch()
 3. npm i mongoose 
 4. npm i express
@@ -58,4 +66,19 @@
 
 #For file upload, Image upload
 16) npm i cloudinary
+17) npm i multer
 
+
+
+
+
+
+
+What is a Cookie (in Web)?
+A cookie is a small piece of data (like a key-value pair) that a server sends to your browser. Your browser stores it and sends it back to the server with every future request to the same domain.
+
+JWT is the format of the token (the actual auth data)
+
+Cookie is a storage/transport method for data like JWTs
+
+You can store a JWT in a cookie to build secure, stateless auth

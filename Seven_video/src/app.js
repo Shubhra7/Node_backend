@@ -7,7 +7,7 @@ const app = express()
 // middleware configuration for the app
 app.use(cors({
     origin: process.env.CORS_ORIGIN,
-    credentials: true
+    credentials: true  // This allows the server to accept cookies, authorization headers, or TLS client certificates from the client.
 }))
 
 app.use(express.json({limit: "16kb"})) 
