@@ -4,6 +4,24 @@ import {User} from '../models/user.model.js';
 import {uploadOnCloudinary} from '../utils/cloudinary.js';
 import { ApiResponse } from '../utils/ApiResponse.js';
 
+// creating method to access both token easily
+const generateAccessAndRefereshTokens = async(userId)=>{
+    try {
+        const user = await User.findById(userId)  //retriving the user of the given userId from DB
+        const accessToken = user.generateAccessToken()
+        const refreshToken = user.generateRefreshToken()
+
+        user.refreshToken = refreshToken  // need to store refresh token into db 
+        await user.save({validateBeforeSave: false}) //*** so save it into the DB and the password 
+        // validation will be kicked up.. so avoid this we did the validateBeforeSave: false
+
+        return {accessToken, refreshToken}
+
+    } catch (error) {
+        throw new ApiError(500, "Something went wrong while generating refresh and access token!")
+    }
+}
+
 const registerUser = asyncHandler( async (req,res)=>{
     // get user details from frontend
     // validation - not empty
@@ -90,4 +108,102 @@ const registerUser = asyncHandler( async (req,res)=>{
     )
 })
 
-export {registerUser}
+const loginUser = asyncHandler(async (req,res)=>{
+    // req body -> data
+    // username or email base login
+    // find the user
+    // password check
+    // is password verified then access and refresh token generate
+    // send token by cookie to the userbrowser localstorage
+
+    const {email, username, password} = req.body
+    
+    // login by username and email
+    if (!(username || email)) {
+        throw new ApiError(400,"username or email is required")
+    }
+
+    // searching in mongo with username or email and got the user
+    const user = await User.findOne({
+        $or: [{username}, {email}]
+    })
+
+    if (!user) {
+        throw new ApiError(404,"User does not exist!")
+    }
+
+    // checking password by isPasswordCorrect which made in User model 
+    const isPasswordValid = await user.isPasswordCorrect(password)
+
+    if (!isPasswordValid) {
+        throw new ApiError(401,"Invalid user credentials(password invalid!)")
+    }
+
+    // generate accessToken and refreshToken
+    const {accessToken, refreshToken} = await generateAccessAndRefereshTokens(user._id)
+
+    // again searching for user because after token creating the previous
+    //  user not stored it by it's reference
+    const loggedInUser = await User.findById(user._id).
+    select("-password -refreshToken ")
+
+    //cookie time
+    const options = {
+        httpOnly: true,  // by this two the cookie will be only able to modified 
+        // into server not into frontend
+        secure: true
+    }
+
+    return res
+    .status(200)
+    .cookie("accessToken",accessToken,options)
+    .cookie("refreshToken",refreshToken,options)
+    .json(
+        new ApiResponse(
+            200,
+            {
+                user: loggedInUser, accessToken, refreshToken
+            },
+            "User logged In Successfully"
+        )
+    )
+
+
+})
+
+const logoutUser = asyncHandler(async (req,res)=>{
+    // req.user ==> for getting that we did cookie==> access token==> auth.middleware ==> router
+    // https://youtu.be/7DVpag3cO0g?list=PLu71SKxNbfoBGh_8p_NS-ZAh6v7HhYqHW
+
+    await User.findByIdAndUpdate(
+        // for update in mongodb ***
+        req.user._id, //for finding by which
+        {  // what to update
+            $set: { 
+                refreshToken: undefined
+            }
+        },
+        {
+            new: true  // to get the new update response with undefined refreshtoken
+        }
+    )
+
+    //cookie time for edit the cookies ****
+    const options = {
+        httpOnly: true,  // by this two the cookie will be only able to 
+        // modified into server not into frontend
+        secure: true
+    }
+
+    return res
+    .status(200)
+    .clearCookie("accessToken",options)
+    .clearCookie("refreshToken",options)
+    .json(new ApiResponse(200,{},"User logged Out"))
+})
+
+export {
+    registerUser,
+    loginUser,
+    logoutUser
+}

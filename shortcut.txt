@@ -74,7 +74,7 @@
 
 
 
-What is a Cookie (in Web)?
+A. What is a Cookie (in Web)?
 A cookie is a small piece of data (like a key-value pair) that a server sends to your browser. Your browser stores it and sends it back to the server with every future request to the same domain.
 
 JWT is the format of the token (the actual auth data)
@@ -82,3 +82,21 @@ JWT is the format of the token (the actual auth data)
 Cookie is a storage/transport method for data like JWTs
 
 You can store a JWT in a cookie to build secure, stateless auth
+
+
+B. 🔄 Token Flow (Typical):
+User logs in → Gets access token + refresh token.
+
+Access token is used in requests.
+
+When access token expires:
+
+Client uses the refresh token to get a new access token (and sometimes a new refresh token).
+
+If refresh token also expires or is revoked → User must log in again.
+
+
+C. cookies need during logout because we need to get the reference of the logged in user, so in cookies--> has accesstoken--> get it and fetch the access token user._id to fetch the data from DB
+
+
+
