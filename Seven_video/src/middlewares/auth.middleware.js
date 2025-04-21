@@ -18,7 +18,7 @@ export const verifyJWT = asyncHandler(async(req,res,next)=>{
         // secret key to decode the encryption
         const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET) 
     
-        const user = await User.findById(decodedToken?._id).select
+        const user = await User.findById(decodedToken?._id).select // token_id === user_id in AccessToken
         ("-password -refreshToken")
     
         if (!user) {
