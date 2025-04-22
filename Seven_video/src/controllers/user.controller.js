@@ -205,14 +205,20 @@ const logoutUser = asyncHandler(async (req,res)=>{
     .json(new ApiResponse(200,{},"User logged Out"))
 })
 
+// for when the accessToken expired the refreshToken can renew it.
 const refreshAccessToken = asyncHandler(async (req,res)=>{
-    
+    //get refreshToken from cookies
+    // decode the token
+    // search the User but the refreshToken _id
+    // checking refreshToken with stored MongoDB stored refreshToken
+    // then again generateAccessAndRefresh Token
+    //send cookies
 
     // first from cookies and second if req come from mobile application
     const incomingRefreshToken = req.cookies.refreshToken || req.body.refreshToken
 
     // if(!incomingRefreshToken) would be
-    if (incomingRefreshToken) {
+    if (!incomingRefreshToken) {
         throw new ApiError(401,"Unathorized request!!")
     }
 
