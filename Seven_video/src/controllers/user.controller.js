@@ -389,6 +389,89 @@ const updateUserCoverImage = asyncHandler(async (req,res)=>{
 
 })
 
+const getUserChannelProfile = asyncHandler(async (req,res)=>{
+    // as when we want to visit any channel, we give /bubai.com **
+    // for username will get from params
+
+    // this username==> whose channel i am searching ****
+    const {username} = req.params
+
+    if (!username?.trim()) {
+        throw new ApiError(400,"username is missing!!")
+    }
+
+    // MongoDB aggregate Pipeline give output as array
+    const channel = await User.aggregate([
+        {   //searching for the channel with the help of username from DB
+            $match: {
+                username: username?.toLowerCase()
+            }
+        },
+        { //pipeline checking for the total subscriptions of the user
+            // In MongoDB, the "lookup" stage is part of the aggregation pipeline that 
+            // allows you to perform left outer joins between collections, similar to SQL joins. 
+            $lookup: {
+                from:"subscriptions", // from which collections
+                localField: "_id",
+                foreignField: "channel",
+                as: "subscribers"
+            }
+        },
+        {  //pipeline checking for the total the user has subscribed
+            $lookup: {
+                from:"subscriptions", // from which collections
+                localField: "_id",
+                foreignField: "subscriber",
+                as: "subscribedTo"
+            }
+        },
+        {
+            // adding these fields without schema model, done by code
+            $addFields: {
+                subcribersCount: {
+                    $size: "$subscribers"  //dollar used beacuse field it is
+                },
+                channelSubscribedToCount: {
+                    $size: "$subscribedTo"
+                },
+                // checking for the channel is subscribed or not?
+                // https://youtu.be/fDTf1mk-jQg?list=PLu71SKxNbfoBGh_8p_NS-ZAh6v7HhYqHW
+                isSubscribed: {
+                    $cond: {
+                        // checking is subscribers
+                        if: {$in: [req.user?._id, "$subscribers.subscriber"]}, 
+                        then: true,
+                        else: false
+                    }
+                }
+            }
+        },
+        {
+            // filtering which values will be showed or passed
+            $project: {
+                fullName: 1,
+                username: 1,
+                subcribersCount: 1,
+                channelSubscribedToCount: 1,
+                isSubscribed: 1,
+                avatar: 1,
+                coverImage: 1,
+                email: 1
+            }
+        }
+    ])
+
+    if (!channel?.length) {
+        throw new ApiError(404,"channel does not exists")
+    }
+
+    return res
+    .status(200)
+    .json(
+        new ApiResponse(200, channel[0], "User Channel fetched Succesfully.")
+    )
+})
+
 export {
     registerUser,
     loginUser,
@@ -398,5 +481,6 @@ export {
     getCurrentUser,
     updateAccountDetails,
     updateUserAvatar,
-    updateUserCoverImage
+    updateUserCoverImage,
+    getUserChannelProfile
 }
