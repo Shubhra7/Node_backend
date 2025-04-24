@@ -4,6 +4,8 @@ import {User} from '../models/user.model.js';
 import {uploadOnCloudinary} from '../utils/cloudinary.js';
 import { ApiResponse } from '../utils/ApiResponse.js';
 import jwt from "jsonwebtoken";
+import mongoose from "mongoose";
+
 
 // creating method to access both token easily
 const generateAccessAndRefereshTokens = async(userId)=>{
@@ -472,6 +474,64 @@ const getUserChannelProfile = asyncHandler(async (req,res)=>{
     )
 })
 
+// when we did req.user._id ==> it give as string but moongose handle it 
+// But in pipeline we need to manually convert into mongodb id
+// https://youtu.be/qNnR7cuVliI?list=PLu71SKxNbfoBGh_8p_NS-ZAh6v7HhYqHW
+const getWatchHistory = asyncHandler(async (req,res)=>{
+    const user = await User.aggregate([
+        {
+            $match: {
+                _id: new mongoose.Types.ObjectId(req.user._id)
+            },
+        },
+        {
+            $lookup: {
+                from: "videos",
+                localField: "watchHistory",
+                foreignField: "_id",
+                as: "watchHistory",
+                pipeline: [
+                    {
+                        $lookup: {
+                            from: "users",
+                            localField: "owner",
+                            foreignField: "_id",
+                            as: "owner",
+                            pipeline: [
+                                {
+                                    $project:{
+                                        fullName: 1,
+                                        username: 1,
+                                        avatar: 1,
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {  // as after lookup we get array value, 
+                    // so for frontend we convert into a object
+                        $addFields:{
+                            owner:{
+                                $first: "$owner"
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    ])
+
+    return res
+    .status(200)
+    .json(
+        new ApiResponse(
+            200,
+            user[0].watchHistory,
+            "Watch history fetched successully."
+        )
+    )
+})
+
 export {
     registerUser,
     loginUser,
@@ -482,5 +542,6 @@ export {
     updateAccountDetails,
     updateUserAvatar,
     updateUserCoverImage,
-    getUserChannelProfile
+    getUserChannelProfile,
+    getWatchHistory
 }

@@ -1,5 +1,15 @@
 import { Router } from "express";
-import { logoutUser,loginUser,registerUser,refreshAccessToken } from "../controllers/user.controller.js"
+import { getCurrentUser,
+        logoutUser,
+        loginUser,
+        registerUser,
+        refreshAccessToken,
+        changeCurrentPassword } from "../controllers/user.controller.js"
+import { updateAccountDetails,
+        updateUserAvatar,
+        updateUserCoverImage,
+        getUserChannelProfile,
+        getWatchHistory } from "../controllers/user.controller.js"
 import {upload} from '../middlewares/multer.middleware.js'
 import {verifyJWT} from '../middlewares/auth.middleware.js'
 
@@ -29,5 +39,25 @@ router.route("/logout").post(
 
 // for end to regenarate the accessToken from refreshToken
 router.route("/refresh-token").post(refreshAccessToken)
+
+router.route("/change-password").post(verifyJWT, changeCurrentPassword)
+
+router.route("/current-user").get(verifyJWT,getCurrentUser)
+
+router.route("/update-account").patch(verifyJWT,updateAccountDetails)
+
+router.route("/avatar").patch(verifyJWT,
+    upload.single("avatar")  //for upload in multer
+    ,updateUserAvatar)
+
+router.route("/cover-image").patch(verifyJWT,
+    upload.single("coverImage")
+    ,updateUserCoverImage
+)
+
+// for getUserChannelProfile==> we take channel username from params***
+router.route("/c/:username").get(verifyJWT, getUserChannelProfile)
+
+router.route("/history").get(verifyJWT, getWatchHistory)
 
 export default router
