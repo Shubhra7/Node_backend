@@ -98,5 +98,16 @@ If refresh token also expires or is revoked → User must log in again.
 
 C. cookies need during logout because we need to get the reference of the logged in user, so in cookies--> has accesstoken--> get it and fetch the access token user._id to fetch the data from DB
 
+D. default export: 
+	-only one exporting element can present.
+	-no {}
+	- can vary name	
+
+   named export:
+	- multiple exporting element can present.
+ 	- must use {}
+	- exact name mandatory
+
+
 
 
