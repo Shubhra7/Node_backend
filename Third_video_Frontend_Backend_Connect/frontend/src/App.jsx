@@ -23,7 +23,8 @@ function App() {
 
       {
         jokes.map((joke)=>(
-          <div key={joke.id}>
+          <div key={joke.id}> // key need when map used react 
+          // use key prop to uniquely identify each for virtual DOM optimization 
             <h3>{joke.title}</h3>
             <p>{joke.content}</p>
           </div>
