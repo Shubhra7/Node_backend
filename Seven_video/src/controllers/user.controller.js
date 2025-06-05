@@ -278,7 +278,9 @@ const refreshAccessToken = asyncHandler(async (req,res)=>{
 
 const changeCurrentPassword = asyncHandler(async (req,res)=>{
     const {oldPassword, newPassword} = req.body
-
+    // console.log("req:body: ",req.body)
+    // console.log("hi2",oldPassword)
+    // console.log(newPassword)
     // using auth.middleware we will add req.user to get the loggedin user ref
     const user = await User.findById(req.user?._id)
     const isPasswordCorrect = await user.isPasswordCorrect(oldPassword)
