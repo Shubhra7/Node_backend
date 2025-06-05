@@ -62,6 +62,8 @@ const registerUser = asyncHandler( async (req,res)=>{
 
     // for taking...getting the localpath or not?
     const avatarLocalPath = req.files?.avatar[0]?.path; // multer gives file method 
+    console.log(req.files.avatar)
+    
     // const coverImageLocalPath = req.files?.coverImage[0]?.path;
     
     // because the coverImage is not manditory so need to check like that
@@ -83,8 +85,10 @@ const registerUser = asyncHandler( async (req,res)=>{
 
     // check beacuse avatar field is required
     if (!avatar) {
-        throw new ApiError(400,"Avatar file is required")
+        throw new ApiError(400,"Avatar file is requiredd")
     }
+
+    //**** some time cloudinary not work properly so open side wise to check */
 
     // creating User type object with the given data to push in Db
     const user = await User.create({
