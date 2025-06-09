@@ -68,6 +68,9 @@
 16) npm i cloudinary
 17) npm i multer
 
+link for rest of the controller and routers
+18) https://github.com/Hruthik-28/youtube-twitter?tab=readme-ov-file
+
 
 
 
