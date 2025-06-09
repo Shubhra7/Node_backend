@@ -29,7 +29,7 @@ export const verifyJWT = asyncHandler(async(req,res,next)=>{
         // adding "user" object to req
         // that will add user reference to the req and will help to do next work
         req.user = user;
-        next()
+        next()  //**** very Important because middleware without the next() will stacked here!!! */
     } catch (error) {
         throw new ApiError(401, error?.message ||
             "Invalid access token"
