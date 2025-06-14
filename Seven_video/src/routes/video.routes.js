@@ -4,7 +4,8 @@ import {verifyJWT} from "../middlewares/auth.middleware.js";
 
 import {
     publishAVideo,
-    getVideoById
+    getVideoById,
+    updateVideo
 } from "../controllers/video.controller.js";
 
 const router = Router();
@@ -27,5 +28,6 @@ router.route("/").post(
 router
     .route("/v/:videoId")
     .get(verifyJWT, getVideoById)
+    .patch(verifyJWT, upload.single("thumbnail"), updateVideo)
 
 export default router
