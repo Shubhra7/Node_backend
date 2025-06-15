@@ -6,12 +6,15 @@ import {
     publishAVideo,
     getVideoById,
     updateVideo,
-    deleteVideo
+    deleteVideo,
+    getAllVideos
 } from "../controllers/video.controller.js";
 
 const router = Router();
 
-router.route("/").post(
+router.route("/")
+    .get(getAllVideos)
+    .post(
     verifyJWT,
     upload.fields([
         {
