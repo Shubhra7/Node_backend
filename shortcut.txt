@@ -71,6 +71,8 @@
 link for rest of the controller and routers
 18) https://github.com/Hruthik-28/youtube-twitter?tab=readme-ov-file
 
+19) After uploading on cloudinary we get a "public_id"
+
 
 
 
