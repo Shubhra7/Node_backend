@@ -106,6 +106,7 @@ const deletePlaylist = asyncHandler(async (req,res)=>{
         );
 });
 
+// adding video in playlist by giving videoId and playlistId
 const addVideoToPlaylist = asyncHandler(async (req,res)=>{
     const { playlistId, videoId }= req.params;
 
