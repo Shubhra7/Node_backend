@@ -212,10 +212,96 @@ const removeVideoFromPlaylist = asyncHandler(async (req,res)=>{
         );
 });
 
+const getPlaylistById = asyncHandler(async (req,res)=>{
+    const { playlistId }= req.params;
+
+    if(!isValidObjectId(playlistId)){
+        throw new ApiError(400,"Invalid playlistid");
+    }
+
+    const playlist = await Playlist.findById(playlistId);
+
+    if(!playlist){
+        throw new ApiError(404,"Playlist not found!");
+    }
+
+    const playlistVideos = await Playlist.aggregate([
+        {
+            $match: {
+                _id: new mongoose.Types.ObjectId(playlistId)
+            }
+        },
+        {
+            $lookup: {
+                from: "videos",
+                localField: "videos",
+                foreignField: "_id",
+                as: "videos",
+            }
+        },
+        {
+            $match: {
+                "videos.isPublished":true
+            }
+        },
+        {
+            $lookup: {
+                from: "users",
+                localField: "owner",
+                foreignField: "_id",
+                as: "owner",
+            }
+        },
+        {
+            $addFields: {
+                totalVideos: {
+                    $size: "$videos"
+                },
+                totalViews: {
+                    $sum: "$videos.views"
+                },
+                owner: {
+                    $first: "$owner"
+                }
+            }
+        },
+        {
+            $project: {
+                name:1,
+                description:1,
+                createdAt:1,
+                updatedAt:1,
+                totalVideos:1,
+                totalViews:1,
+                videos: {
+                    _id:1,
+                    "videoFile.url":1,
+                    "thumbnail.url":1,
+                    title:1,
+                    description:1,
+                    duration:1,
+                    createdAt:1,
+                    views:1
+                },
+                owner: {
+                    username:1,
+                    fullName:1,
+                    avatar:1
+                }
+            }
+        }
+    ]);
+
+    return res
+        .status(200)
+        .json(new ApiResponse(200,playlistVideos[0],"playlist fetched successfully."))
+});
+
 export {
     createPlaylist,
     updatePlaylist,
     deletePlaylist,
     addVideoToPlaylist,
-    removeVideoFromPlaylist
+    removeVideoFromPlaylist,
+    getPlaylistById
 }
