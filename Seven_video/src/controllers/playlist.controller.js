@@ -162,9 +162,60 @@ const addVideoToPlaylist = asyncHandler(async (req,res)=>{
         );
 })
 
+const removeVideoFromPlaylist = asyncHandler(async (req,res)=>{
+    const { playlistId, videoId }= req.params;
+
+    if(!isValidObjectId(playlistId) || !isValidObjectId(videoId)){
+        throw new ApiError(400,"Invalid playlistId or videoId");
+    }
+
+    const playlist = await Playlist.findById(playlistId);
+    const video = await Video.findById(videoId);
+
+    if(!playlist){
+        throw new ApiError(404,"Playlist not found");
+    }
+    if(!video){
+        throw new ApiError(404,"Video not found");
+    }
+
+    if(
+        (playlist.owner?.toString() && video.owner.toString()) !==
+        req.user?._id.toString()
+    ){
+        throw new ApiError(
+            404,
+            "only owner can remove video from their playlist"
+        );
+    }
+
+    const updatedPlaylist = await Playlist.findByIdAndUpdate(
+        playlistId,
+        {
+            // $pull is a MongoDB update operator that removes a value
+            //  (or values) from an array if it matches a specified condition.
+            $pull: {
+                videos: videoId,
+            }
+        },
+        { new:true }
+    );
+
+    return res
+        .status(200)
+        .json(
+            new ApiResponse(
+                200,
+                updatedPlaylist,
+                "Removed video from playlist successfully"
+            )
+        );
+});
+
 export {
     createPlaylist,
     updatePlaylist,
     deletePlaylist,
-    addVideoToPlaylist
+    addVideoToPlaylist,
+    removeVideoFromPlaylist
 }
