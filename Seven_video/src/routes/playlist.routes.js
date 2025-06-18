@@ -4,7 +4,8 @@ import {verifyJWT} from '../middlewares/auth.middleware.js'
 import {
     createPlaylist,
     updatePlaylist,
-    deletePlaylist
+    deletePlaylist,
+    addVideoToPlaylist
 } from "../controllers/playlist.controller.js";
 
 const router = Router()
@@ -17,5 +18,7 @@ router
     .route("/:playlistId")
     .patch(updatePlaylist)
     .delete(deletePlaylist)
+
+router.route("/add/:videoId/:playlistId").patch(addVideoToPlaylist);
 
 export default router;

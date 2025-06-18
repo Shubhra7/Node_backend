@@ -75,6 +75,7 @@ const updatePlaylist = asyncHandler(async (req,res)=>{
         )
 })
 
+// delete a playlist by given playlist id
 const deletePlaylist = asyncHandler(async (req,res)=>{
     const { playlistId }= req.params;
 
@@ -105,8 +106,64 @@ const deletePlaylist = asyncHandler(async (req,res)=>{
         );
 });
 
+const addVideoToPlaylist = asyncHandler(async (req,res)=>{
+    const { playlistId, videoId }= req.params;
+
+    if(!isValidObjectId(playlistId) || !isValidObjectId(videoId)){
+        throw new ApiError(400,"Invalid PlaylistId or videoId");
+    }
+
+    const playlist = await Playlist.findById(playlistId);
+    const video = await Video.findById(videoId);
+
+    if(!playlist){
+        throw new ApiError(404,"Playlist not found")
+    }
+
+    if(!video){
+        throw new ApiError(404,"video not found");
+    }
+
+    if(
+        (playlist.owner?.toString() && video.owner.toString())!==
+        req.user?._id.toString()
+    ){
+        throw new ApiError(400,"only owner can add video to their playlist ");
+    }
+
+    const updatedPlaylist = await Playlist.findByIdAndUpdate(
+        playlist?._id,
+        {
+            // addToSet is an update operator used to add a value to an array 
+            // only if it doesn’t already exist in that array
+            $addToSet:{ 
+                videos: videoId,
+            }
+        },
+        { new: true }
+    )
+
+    if(!updatedPlaylist){
+        throw new ApiError(
+            400,
+            "failed to add video to playlist please try again"
+        );
+    }
+
+    return res
+        .status(200)
+        .json(
+            new ApiResponse(
+                200,
+                updatedPlaylist,
+                "Added video to playlist successfully"
+            )
+        );
+})
+
 export {
     createPlaylist,
     updatePlaylist,
-    deletePlaylist
+    deletePlaylist,
+    addVideoToPlaylist
 }
