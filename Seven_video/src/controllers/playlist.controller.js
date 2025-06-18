@@ -299,6 +299,7 @@ const getPlaylistById = asyncHandler(async (req,res)=>{
         .json(new ApiResponse(200,playlistVideos[0],"playlist fetched successfully."))
 });
 
+// get a user created playlist by the given user id
 const getUserPlaylists = asyncHandler(async (req,res)=>{
     const { userId } = req.params;
 
